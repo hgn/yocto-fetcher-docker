@@ -3,6 +3,11 @@
 import sys
 import time
 import subprocess
+import http.server
+import socketserver
+import os
+
+PORT = 8000
 
 def load_configuration_file(filepath):
     config = dict()
@@ -25,6 +30,13 @@ def main():
         for line in run_command(cmd):
            print(line)
 
+    web_dir = os.path.join(config['servedir'])
+    os.chdir(web_dir)
+
+    Handler = http.server.SimpleHTTPRequestHandler
+    httpd = socketserver.TCPServer(("", config['port']), Handler)
+    print("serving at port", PORT)
+    httpd.serve_forever()
 
 if __name__ == "__main__":
     main()
